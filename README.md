@@ -1,66 +1,130 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Custom Background Job Runner
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Table of contents
 
-## About Laravel
+- [General Info](#general-info)
+- [Requirements](#requirements)
+- [Setup](#setup)
+- [Usage](#usage)
+- [Advanced Features](#advanced-features)
+- [Assumptions, Limitations, and Future Improvements](#assumptions-limitations-and-future-improvements)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## General Info
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+This project builds a custom system to execute PHP classes as background jobs, independent of Laravel's built-in queue system.
+It queues, executes, and manage background jobs within a Laravel application, independent of Laravel's built-in queue system using redis as a job queue it offers significant improvements in terms of scalability, speed, and reliability. The system supports job priority, delayed execution, retry attempts, and a web-based dashboard for monitoring and managing jobs.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Requirements
 
-## Learning Laravel
+- [php ^8.1](https://www.php.net/ "PHP")
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Setup
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- Clone the project and navigate to it's root path and install the required dependency packages using the below commands on the terminal/command line interface.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+  ```bash
+  git clone https://github.com/ilejohn-official/background-job-runner.git
+  cd background-job-runner
+  ```
 
-## Laravel Sponsors
+  ```
+  composer install
+  ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- Copy and paste the content of the .env.example file into a new file named .env in the same directory as the former and set it's values based on your environment's configuration.
 
-### Premium Partners
+- Generate Application Key
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+  ```
+  php artisan key:generate
+  ```
+- Run Migration
 
-## Contributing
+  ```
+  php artisan migrate
+  ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Ensure the php redis extension is installed and that redis is running as this package uses Redis to store job data and manage queues.
+  ```
+  sudo apt-get install php-redis
+  ```
 
-## Code of Conduct
+- **Enable Redis in Laravel** by updating `.env`:
+   ```env
+   QUEUE_CONNECTION=redis
+   REDIS_HOST=127.0.0.1
+   REDIS_PORT=6379
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Usage
 
-## Security Vulnerabilities
+  ### To run local server
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    ```
+    php artisan serve
+    ```
 
-## License
+  ### To run a class as background job.
+   **Job class creation**
+    Create a job class with the desired method to run preferrably in the app directory or any custom namespaced class
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+   **Helper method usage**
+    Use the `runBackgroundJob` helper function to queue the job class. This function requires the following parameters:
+
+    ```php
+    $class // The class containing the method to execute.
+    $method: // The method within the class to call.
+    $parameters: // An array of parameters to pass to the method (optional).
+    $priority: // An integer representing the job's priority (0 = low, 1 = high).
+    $delay: // Time in seconds to delay job execution (optional).
+    ```
+
+    You can configure the number of retries by setting `BAKGROUND_JOB_MAX_RETRIES` in .env
+
+   **Example**
+   
+    ```php
+    runBackgroundJob(\App\Jobs\SampleJob::class, 'execute', ['param1', 'param2'], 1, 60);
+    ```
+
+    In this example:
+
+    `\App\Jobs\SampleJob::class` is the class containing the job method.
+    `execute` is the method within the job class.
+    `['param1', 'param2']` are parameters passed to the method.
+    `1` is the priority (high).
+    `60` is a delay in seconds before executing.
+
+  ### Test cases
+    execute `php artisan app:run-test-jobs {case}` where case is a,b,c or d which are 4 different scenarios been evaluated. app/Console/Commands/RunTestJob.php has the details of what each case tests for. check the log files in storage/logs for the output. You can modify for more variation.
+
+## Advanced Features
+
+ ### Web-Based Dashboard
+    A web-based dashboard is available for managing and monitoring jobs. Register first then login before accessing the routes. The dashboard provides the following features:
+
+  #### 1. **Job Listing**
+  View active background jobs with status, retry count, and priority.
+
+  ##### `/background-jobs`
+
+  ### 2.  **Job Logs**
+  Access logs for each job.
+
+  ##### `/background-jobs/{id}/logs`
+
+  ### 3.  **Job Cancellation**
+  Cancel any running job, preventing further processing.
+
+## Assumptions, Limitations, and Future Improvements
+ ### Assumptions
+ - Redis is available as the primary storage for job data.
+ - Jobs are well-defined in Laravel classes, with accessible methods.
+
+ ### Limitations
+ - Cancellation: Canceling a job only prevents re-queuing or further processing; it does not stop jobs mid-execution.
+
+ ### Future Improvements
+  - Job Dependencies: Allow jobs to depend on other jobs for execution order.
+  - Job Scheduling: Integrate scheduling for periodic jobs.
+  - Job Pause/Resume: Add support to pause and resume jobs on the dashboard.
