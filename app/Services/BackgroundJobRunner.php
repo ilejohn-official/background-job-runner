@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Redis;
 use App\Models\BackgroundJob;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
 
 class BackgroundJobRunner
@@ -90,6 +90,13 @@ class BackgroundJobRunner
         Redis::hset(self::JOB_STATUS_PREFIX . $job->id, 'status', 'running');
 
         try {
+            // Validate Class Name is pre approved
+            $approvedClasses = config('background_jobs.approved_classes');
+                
+            if (!in_array($job->class, $approvedClasses)) {
+                throw new \Exception("Unauthorized job class: $job->class is not approved.");
+            }
+
             // Ensure the class and method are valid
             if (!class_exists($job->class)) {
                 throw new \Exception("Class {$job->class} does not exist.");
@@ -97,8 +104,8 @@ class BackgroundJobRunner
 
             $instance = app($job->class);
 
-            if (!method_exists($instance, $job->method)) {
-                throw new \Exception("Method {$job->method} does not exist on class {$job->class}.");
+            if (!method_exists($instance, $job->method || !preg_match('/^[a-zA-Z0-9_]+$/', $job->method))) {
+                throw new \Exception("Method {$job->method} does not exist or is invalid on class {$job->class}.");
             }
 
             // Execute the method

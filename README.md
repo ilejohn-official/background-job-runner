@@ -66,7 +66,8 @@ It queues, executes, and manage background jobs within a Laravel application, in
 
   ### To run a class as background job.
    **Job class creation**
-    Create a job class with the desired method to run preferrably in the app directory or any custom namespaced class
+    Create a job class with the desired method to run preferrably in the app directory or any custom namespaced class.
+    Register the class in the file `config/background_jobs.php` array as a value of the key `approved_classes` so it's pre-approved to run.
 
    **Helper method usage**
     Use the `runBackgroundJob` helper function to queue the job class. This function requires the following parameters:
