@@ -10,7 +10,9 @@ class BackgroundJob
         public string $method,
         public array $parameters = [],
         public int $priority = 0,
-        public int $attempts = 0
+        public int $attempts = 0,
+        // Number of seconds after which to run
+        public int $runAt = 0
     ) {}
 
     /**
@@ -25,6 +27,7 @@ class BackgroundJob
             'parameters' => $this->parameters,
             'priority' => $this->priority,
             'attempts' => $this->attempts,
+            'run_at' => $this->runAt
         ];
     }
 }
