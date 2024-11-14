@@ -71,7 +71,7 @@ It queues, executes, and manage background jobs within a Laravel application, in
    **Helper method usage**
     Use the `runBackgroundJob` helper function to queue the job class. This function requires the following parameters:
 
-    ```php
+    ```
     $class // The class containing the method to execute.
     $method: // The method within the class to call.
     $parameters: // An array of parameters to pass to the method (optional).
@@ -83,25 +83,27 @@ It queues, executes, and manage background jobs within a Laravel application, in
 
    **Example**
    
-    ```php
+    ```
     runBackgroundJob(\App\Jobs\SampleJob::class, 'execute', ['param1', 'param2'], 1, 60);
     ```
 
     In this example:
 
-    `\App\Jobs\SampleJob::class` is the class containing the job method.
-    `execute` is the method within the job class.
-    `['param1', 'param2']` are parameters passed to the method.
-    `1` is the priority (high).
-    `60` is a delay in seconds before executing.
+   - `\App\Jobs\SampleJob::class` is the class containing the job method.
+   - `execute` is the method within the job class.
+   - `['param1', 'param2']` are parameters passed to the method.
+   - `1` is the priority (high).
+   - `60` is a delay in seconds before executing.
 
   ### Test cases
-    execute `php artisan app:run-test-jobs {case}` where case is a,b,c or d which are 4 different scenarios been evaluated. app/Console/Commands/RunTestJob.php has the details of what each case tests for. check the log files in storage/logs for the output. You can modify for more variation.
+   - execute `php artisan app:run-test-jobs {case}` where case is a,b,c or d which are 4 different scenarios been evaluated. app/Console/Commands/RunTestJob.php has the details of what each case tests for. check the log files
+   in storage/logs for the output. You can modify for more variation.
 
 ## Advanced Features
 
  ### Web-Based Dashboard
-    A web-based dashboard is available for managing and monitoring jobs. Register first then login before accessing the routes. The dashboard provides the following features:
+   - A web-based dashboard is available for managing and monitoring jobs. Register first then login before accessing
+   the routes. The dashboard provides the following features:
 
   #### 1. **Job Listing**
   View active background jobs with status, retry count, and priority.
