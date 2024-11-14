@@ -10,6 +10,7 @@ class BackgroundJobRunner
 {
     const JOB_QUEUE = 'background_jobs:queue';
     const JOB_STATUS_PREFIX = 'background_jobs:status:';
+    const JOB_LOGS_PREFIX = 'background_jobs:logs:';
 
     /**
      * Queue a job with priority, status, and metadata tracking.
@@ -143,6 +144,14 @@ class BackgroundJobRunner
     {
         Redis::hset(self::JOB_STATUS_PREFIX . $jobId, 'status', 'canceled');
         Logger::info("Job canceled", ['job_id' => $jobId]);
+    }
+
+    /**
+     * Retrieve logs for a specific job.
+     */
+    public static function getJobLogs($jobId)
+    {
+        return Redis::lrange(self::JOB_LOGS_PREFIX . $jobId, 0, -1);
     }
 
 }
