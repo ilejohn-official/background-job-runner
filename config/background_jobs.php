@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'max_retries' => 3, // Maximum retry attempts for failed jobs
+    'max_retries' => env('BAKGROUND_JOB_MAX_RETRIES', 3), // Maximum retry attempts for failed jobs
 ];
