@@ -98,7 +98,7 @@ It queues, executes, and manage background jobs within a Laravel application, in
 
   ### Test cases
    - execute `php artisan app:run-test-jobs {case}` where case is a,b,c or d which are 4 different scenarios been evaluated. app/Console/Commands/RunTestJob.php has the details of what each case tests for. check the log files
-   in storage/logs for the output. You can modify for more variation.
+   in storage/logs for the output. Allow for for 10 seconds in betweeen in each run so the loop can reset properly. You can modify for more variation.
 
 ## Advanced Features
 

@@ -40,8 +40,8 @@ class RunTestJobs extends Command
                 runBackgroundJob(\App\SampleJobs\JobB::class, 'handle', ['Parameter B'], 1);
                 break;
             case 'c':
-                // Queue a job with a delay and verify it is executed only after the delay period.
-                runBackgroundJob(\App\SampleJobs\JobA::class, 'handle', ['Delayed Job']);
+                // Queue a job with a delay and verify it is executed only after the delay period. In this case, we're delaying by 5 seconds
+                runBackgroundJob(\App\SampleJobs\JobA::class, 'handle', ['Delayed Job'], 0, 5);
                 break;
             case 'd':
                 // Queue a job that throws an exception to test retry handling.
