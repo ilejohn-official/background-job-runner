@@ -104,7 +104,7 @@ class BackgroundJobRunner
 
             $instance = app($job->class);
 
-            if (!method_exists($instance, $job->method || !preg_match('/^[a-zA-Z0-9_]+$/', $job->method))) {
+            if (!method_exists($instance, $job->method) || !preg_match('/^[a-zA-Z0-9_]+$/', $job->method)) {
                 throw new \Exception("Method {$job->method} does not exist or is invalid on class {$job->class}.");
             }
 
@@ -118,7 +118,7 @@ class BackgroundJobRunner
             if ($job->attempts < config('background_jobs.max_retries', 3)) {
                 $job->attempts++;
                 Redis::hset(self::JOB_STATUS_PREFIX . $job->id, 'attempts', $job->attempts);
-                self::requeueJob($job);
+                self::requeueJob($job, $e->getMessage());
             } else {
                 Redis::hset(self::JOB_STATUS_PREFIX . $job->id, 'status', 'failed');
 
@@ -137,11 +137,11 @@ class BackgroundJobRunner
     /**
      * Requeue a failed job with updated attempts count.
      */
-    private static function requeueJob(BackgroundJob $job)
+    private static function requeueJob(BackgroundJob $job, string $error)
     {
         $priorityScore = $job->priority > 0 ? 0 : 1;
         Redis::zadd(self::JOB_QUEUE, $priorityScore, json_encode($job->toArray()));
-        Logger::info("Job requeued", ['class' => $job->class, 'method' => $job->method, 'attempts' => $job->attempts, 'job_id' => $job->id]);
+        Logger::info("Job requeued", ['class' => $job->class, 'method' => $job->method, 'attempts' => $job->attempts, 'job_id' => $job->id, 'error' => $error]);
     }
 
     /**

@@ -16,7 +16,7 @@ class Logger
     public static function error(mixed $message, array $context = []): void
     {
         self::logJob($context['job_id'], $message . '. | Error: ' . $context['error']);
-        Log::channel('background_jobs_error')->error($message, $context);
+        Log::channel('background_jobs_errors')->error($message, $context);
     }
 
     /**

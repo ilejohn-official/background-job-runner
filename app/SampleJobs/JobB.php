@@ -8,6 +8,6 @@ class JobB
 {
     public function handle(string $str)
     {
-        Log::info($str);
+        Log::info($str, ['method' => __METHOD__]);
     }
 }
