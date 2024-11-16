@@ -43,6 +43,11 @@ It queues, executes, and manage background jobs within a Laravel application, in
   ```
   php artisan migrate
   ```
+- Install npm packages
+
+  ```
+  npm install
+  ```
 
 - Ensure the php redis extension is installed and that redis is running as this package uses Redis to store job data and manage queues.
   ```
@@ -62,6 +67,10 @@ It queues, executes, and manage background jobs within a Laravel application, in
 
     ```
     php artisan serve
+    ```
+
+    ```
+    npm run dev
     ```
 
   ### To run a class as background job.
