@@ -25,6 +25,6 @@ class Logger
     private static function logJob($jobId, $message)
     {
         $timestamp = now()->toDateTimeString();
-        Redis::rpush(BackgroundJobRunner::JOB_LOGS_PREFIX . $jobId, "[$timestamp] $message");
+        Redis::rpush(BackgroundJobRunner::JOB_LOGS_PREFIX . $jobId, "[$timestamp]:  $message");
     }
 }
