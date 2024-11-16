@@ -28,9 +28,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/background-jobs', [BackgroundJobController::class, 'index'])->name('background.jobs.index');
-    Route::get('/background-jobs/{id}/logs', [BackgroundJobController::class, 'showLogs'])->name('background.jobs.logs');
-    Route::post('/background-jobs/{id}/cancel', [BackgroundJobController::class, 'cancelJob'])->name('background.jobs.cancel');
+    Route::get('/background-jobs', [BackgroundJobController::class, 'index'])->name('background-jobs.index');
+    Route::get('/background-jobs/{id}/logs', [BackgroundJobController::class, 'showLogs'])->name('background-jobs.logs');
+    Route::post('/background-jobs/{id}/cancel', [BackgroundJobController::class, 'cancelJob'])->name('background-jobs.cancel');
 });
 
 require __DIR__.'/auth.php';

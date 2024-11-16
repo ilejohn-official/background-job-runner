@@ -31,6 +31,6 @@ class BackgroundJobController extends Controller
     public function cancelJob($id)
     {
         BackgroundJobRunner::cancelJob($id);
-        return redirect()->route('background.jobs.index')->with('status', 'Job canceled successfully.');
+        return redirect()->route('background-jobs.index')->with('status', 'Job canceled successfully.');
     }
 }

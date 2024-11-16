@@ -39,9 +39,11 @@
                         <td>{{ $job['attempts'] }}</td>
                         <td>{{ $job['priority'] }}</td>
                         <td>
-                            <a href="{{ route('background_jobs.logs', $job['id']) }}" class="btn btn-info">View Logs</a>
+                            <a href="{{ route('background-jobs.logs', $job['id']) }}" class="btn btn-info">
+                                <x-primary-button class="ms-4">View Logs</x-primary-button>
+                            </a>
                             @if($job['status'] !== 'canceled' && $job['status'] !== 'completed')
-                                <form action="{{ route('background_jobs.cancel', $job['id']) }}" method="POST" style="display:inline;">
+                                <form action="{{ route('background-jobs.cancel', $job['id']) }}" method="POST" style="display:inline;">
                                     @csrf
                                     <x-danger-button class="ms-4">Cancel</x-danger-button>
                                 </form>
